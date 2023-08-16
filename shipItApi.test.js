@@ -1,7 +1,7 @@
 "use strict";
 
 const {
-  shipProduct, SHIPIT_SHIP_URL} = require("./shipItApi");
+  shipProduct, SHIPIT_SHIP_URL } = require("./shipItApi");
 
 
 
@@ -11,16 +11,35 @@ const axiosMock = new AxiosMockAdapter(axios);
 
 
 test("shipProduct", async function () {
-  // const shipId = await shipProduct({
-  //   productId: 1000,
-  //   name: "Test Tester",
-  //   addr: "100 Test St",
-  //   zip: "12345-6789",
 
-  axiosMock.onPost(`${SHIPIT_SHIP_URL}`)
-
+  axiosMock.onPost(`${SHIPIT_SHIP_URL}`, {
+    itemId: 1500,
+    name: "Dan",
+    addr: "100 Test St",
+    zip: "12345",
+    key: "SECRET"
+  }).reply(200, {
+    receipt: {
+      itemId: 1500,
+      name: "Dan",
+      addr: " 100 Test St",
+      zip: "12345",
+      key: "SECRET",
+      shipId: 111
+    }
 
   });
+  const res = await shipProduct(1500, "Dan", "100 Test St", "12345");
+  expect(res).toEqual({
+    receipt: {
+      itemId: 1500,
+      name: "Dan",
+      addr: "100 Test St",
+      zip: "12345",
+      shipId: 111
+    }
+  });
+});
 
   // expect(shipId).toEqual(expect.any(Number));
-});
+
